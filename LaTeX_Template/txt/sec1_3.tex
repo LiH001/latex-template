@@ -1,0 +1,134 @@
+% ==========================================
+% 第四章 随机变量的数字特征相关
+% ==========================================
+
+% --- 在本节开头局部定义新的引理颜色 ---
+\makeatletter
+% 定义 sec1_3 的专属颜色：橙色
+\definecolor{LCCOrangeSec13}{RGB}{235, 120, 40} 
+% 定义新的引理环境，完美继承 lcc@basestyle 和原有的计数器
+\newtcolorbox[use counter from=引理]{引理Sec13}[1][]{
+    lcc@basestyle,
+    colframe=LCCOrangeSec13!70!white, colback=LCCOrangeSec13!2,
+    interior style={top color=LCCOrangeSec13!8, bottom color=LCCOrangeSec13!1},
+    frame style={left color=LCCOrangeSec13, right color=LCCOrangeSec13!60!white},
+    title={引理~\thetcbcounter\if\relax\detokenize{#1}\relax\else\quad #1\fi}
+}
+\makeatother
+% --------------------------------------
+
+\vspace{1.5em}
+
+\subsubsection*{1. 切比雪夫不等式 (Chebyshev's Inequality)}
+
+\begin{引理Sec13}[切比雪夫不等式的意义]
+	切比雪夫不等式给出了在随机变量分布未知的情况下，仅仅利用其期望和方差，就能估算出随机变量偏离其期望值的概率上限。
+\end{引理Sec13}
+
+设随机变量 $X$ 的数学期望为 $E(X) = \mu$，方差为 $D(X) = \sigma^2$，则对于任意给定的正数 $\varepsilon > 0$，有：
+$$ P\{|X - \mu| \ge \varepsilon\} \le \frac{\sigma^2}{\varepsilon^2} $$
+等价形式（对立事件）：
+$$ P\{|X - \mu| < \varepsilon\} \ge 1 - \frac{\sigma^2}{\varepsilon^2} $$
+
+\textbf{证明}\quad （以连续型随机变量为例，离散型同理可证）\\
+设 $X$ 的概率密度函数为 $f(x)$，根据方差的定义：
+$$ D(X) = \int_{-\infty}^{+\infty} (x - \mu)^2 f(x) dx $$
+由于被积函数非负，我们可以缩小积分区间，去掉 $|x - \mu| < \varepsilon$ 的部分，不等号依然成立：
+$$ D(X) \ge \int_{|x - \mu| \ge \varepsilon} (x - \mu)^2 f(x) dx $$
+在积分区间 $|x - \mu| \ge \varepsilon$ 上，显然有 $(x - \mu)^2 \ge \varepsilon^2$，因此：
+$$ 
+\begin{aligned}
+D(X) &\ge \int_{|x - \mu| \ge \varepsilon} \varepsilon^2 f(x) dx \\
+&= \varepsilon^2 \int_{|x - \mu| \ge \varepsilon} f(x) dx \\
+&= \varepsilon^2 P\{|X - \mu| \ge \varepsilon\}
+\end{aligned}
+$$
+两边同除以 $\varepsilon^2$，即证得：
+$$ P\{|X - \mu| \ge \varepsilon\} \le \frac{D(X)}{\varepsilon^2} = \frac{\sigma^2}{\varepsilon^2} $$
+
+
+\vspace{1em}
+\subsubsection*{2. 协方差与相关系数}
+
+\textbf{协方差 (Covariance)}的定义与计算公式：
+$$ \text{Cov}(X, Y) = E{[X - E(X)][Y - E(Y)]} $$
+\textbf{计算公式推导：}
+$$ 
+\begin{aligned}
+\text{Cov}(X, Y) &= E[XY - X \cdot E(Y) - Y \cdot E(X) + E(X)E(Y)] \\
+&= E(XY) - E(X)E(Y) - E(Y)E(X) + E(X)E(Y) \\
+&= E(XY) - E(X)E(Y)
+\end{aligned}
+$$
+
+\textbf{相关系数 (Correlation Coefficient)}的定义：
+$$ \rho_{XY} = \frac{\text{Cov}(X, Y)}{\sqrt{D(X)} \cdot \sqrt{D(Y)}} $$
+
+\textbf{方差的展开公式：}
+$$ D(X+Y) = D(X) + D(Y) + 2\text{Cov}(X, Y) $$
+\textbf{证明：}
+$$ 
+\begin{aligned}
+D(X+Y) &= E\{[(X+Y) - E(X+Y)]^2\} \\
+&= E\{[(X - E(X)) + (Y - E(Y))]^2\} \\
+&= E\{[X - E(X)]^2 + [Y - E(Y)]^2 + 2[X - E(X)][Y - E(Y)]\} \\
+&= D(X) + D(Y) + 2\text{Cov}(X, Y)
+\end{aligned}
+$$
+
+\textbf{协方差的性质及证明：}
+\begin{itemize}
+    \item 提取常数：$\text{Cov}(aX, bY) = ab \cdot \text{Cov}(X, Y)$ \\
+    \textit{证明：} $\text{Cov}(aX, bY) = E[(aX - E(aX))(bY - E(bY))] = E[ab(X - E(X))(Y - E(Y))] = ab\text{Cov}(X, Y)$
+    \item 分配律：$\text{Cov}(X_1 + X_2, Y) = \text{Cov}(X_1, Y) + \text{Cov}(X_2, Y)$
+\end{itemize}
+
+\textbf{不相关与独立的等价关系：}
+$$ \rho_{XY} = 0 \iff X, Y \text{ 不相关 } \iff \text{Cov}(X, Y) = 0 \iff E(XY) = E(X) \cdot E(Y) $$
+
+\begin{引理Sec13}[正态分布的特殊性]
+	对于一般的随机变量，独立必定不相关，但不相关不一定独立。然而，对于\textbf{二维正态分布}，这两个概念是完全等价的。
+\end{引理Sec13}
+
+当 $(X, Y)$ 服从二维正态分布时：
+$$ X, Y \text{ 相互独立 } \iff X, Y \text{ 不相关 } (\text{即 } \rho = 0) $$
+\textbf{证明简述}\quad 若 $X, Y$ 不相关，即 $\rho = 0$，代入二维正态分布的概率密度展开式中：
+$$ 
+\begin{aligned}
+f(x_1, x_2) &= \frac{1}{2\pi \sigma_1 \sigma_2} \exp\left\{ -\frac{1}{2} \left[ \frac{(x_1-\mu_1)^2}{\sigma_1^2} + \frac{(x_2-\mu_2)^2}{\sigma_2^2} \right] \right\} \\
+&= \left[ \frac{1}{\sqrt{2\pi}\sigma_1} \exp\left(-\frac{(x_1-\mu_1)^2}{2\sigma_1^2}\right) \right] \cdot \left[ \frac{1}{\sqrt{2\pi}\sigma_2} \exp\left(-\frac{(x_2-\mu_2)^2}{2\sigma_2^2}\right) \right] \\
+&= f_{X_1}(x_1) \cdot f_{X_2}(x_2)
+\end{aligned}
+$$
+联合概率密度等于边缘概率密度的乘积，故 $X, Y$ 相互独立。反之，若独立，协方差必为 0，即 $\rho = 0$。
+
+
+\vspace{1em}
+\subsubsection*{3. 矩与协方差矩阵}
+
+\textbf{矩 (Moments) 的定义}
+\begin{itemize}
+    \item $k$ 阶原点矩：$E(X^k)$
+    \item $k$ 阶中心矩：$E\{[X - E(X)]^k\}$
+    \item $k+l$ 阶混合矩：$E(X^k Y^l)$
+    \item $k+l$ 阶混合中心矩：$E\{[X - E(X)]^k \cdot [Y - E(Y)]^l\}$
+\end{itemize}
+
+\textbf{二维正态分布与协方差矩阵}
+设 $(X, Y) \sim N(\mu_1, \mu_2, \sigma_1^2, \sigma_2^2, \rho)$，则其相关系数 $\rho_{XY} = \rho$
+其协方差矩阵 $C$ （或记为 $\Sigma$）定义为：
+$$ C = \begin{pmatrix} \sigma_1^2 & \rho \sigma_1 \sigma_2 \\ \rho \sigma_1 \sigma_2 & \sigma_2^2 \end{pmatrix} $$
+
+二维正态分布的概率密度函数有两种表示方法：
+
+\textbf{(1) 矩阵形式 (更具一般性，易于向高维推广)：}
+记均值向量 $\boldsymbol{\mu} = (\mu_1, \mu_2)^T$，随机向量 $\boldsymbol{X} = (x_1, x_2)^T$，则：
+$$ f(x_1, x_2) = \frac{1}{(2\pi) \cdot |C|^{\frac{1}{2}}} \exp\left\{ -\frac{1}{2} (\boldsymbol{x} - \boldsymbol{\mu})^T C^{-1} (\boldsymbol{x} - \boldsymbol{\mu}) \right\} $$
+
+\textbf{(2) 展开形式 (常用于代数计算)：}
+$$ 
+\begin{aligned}
+f(x_1, x_2) &= \frac{1}{2\pi \sigma_1 \sigma_2 \sqrt{1-\rho^2}} \cdot \\
+&\exp\left\{ -\frac{1}{2(1-\rho^2)} \left[ \frac{(x_1-\mu_1)^2}{\sigma_1^2} - 2\rho \frac{(x_1-\mu_1)(x_2-\mu_2)}{\sigma_1 \sigma_2} + \frac{(x_2-\mu_2)^2}{\sigma_2^2} \right] \right\}
+\end{aligned}
+$$

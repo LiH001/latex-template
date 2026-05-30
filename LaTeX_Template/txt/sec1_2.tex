@@ -1,0 +1,139 @@
+% ==========================================
+% 随机变量（一维、二维）相关
+% ==========================================
+
+% --- 在本节开头局部定义新的引理颜色 ---
+\makeatletter
+\definecolor{LCCMintGreen}{RGB}{46, 184, 114} % 专属薄荷绿
+\newtcolorbox[use counter from=引理]{新引理}[1][]{
+    lcc@basestyle,
+    colframe=LCCMintGreen, colback=LCCMintGreen!2,
+    interior style={top color=LCCMintGreen!8, bottom color=LCCMintGreen!1},
+    frame style={left color=LCCMintGreen, right color=LCCMintGreen!60!white},
+    title={引理~\thetcbcounter\if\relax\detokenize{#1}\relax\else\quad #1\fi}
+}
+\makeatother
+% --------------------------------------
+
+\subsubsection*{1. 一维随机变量的函数的分布}
+
+\begin{新引理}[复合函数与变上限积分求导法则]
+	在推导随机变量函数的概率密度时，通常先求分布函数 $F_Y(y)$，再对其求导。对于形如 $F(y) = \int_{a(y)}^{b(y)} f(t) dt$ 的积分，其导数为：
+	$$ F'(y) = f(b(y)) \cdot b'(y) - f(a(y)) \cdot a'(y) $$
+\end{新引理}
+
+\textbf{经典例题：平方的分布} \quad 设连续型随机变量 $X$ 的概率密度为 $f_X(x)$，求 $Y = X^2$ 的概率密度 $f_Y(y)$。
+
+\textbf{详细推导}\quad 
+首先求 $Y$ 的分布函数 $F_Y(y)$。显然，当 $y < 0$ 时，$P\{X^2 \le y\} = 0$。\\
+当 $y \ge 0$ 时：
+$$ F_Y(y) = P\{Y \le y\} = P\{X^2 \le y\} = P\{-\sqrt{y} \le X \le \sqrt{y}\} $$
+利用分布函数的定义，上式可以写为：
+$$ F_Y(y) = F_X(\sqrt{y}) - F_X(-\sqrt{y}) $$
+对 $y$ 求导，利用复合函数求导法则，可得 $Y$ 的概率密度函数：
+$$ 
+\begin{aligned}
+f_Y(y) &= \frac{d}{dy} [F_X(\sqrt{y}) - F_X(-\sqrt{y})] \\
+&= f_X(\sqrt{y}) \cdot \left( \frac{1}{2\sqrt{y}} \right) - f_X(-\sqrt{y}) \cdot \left( -\frac{1}{2\sqrt{y}} \right) \\
+&= \frac{1}{2\sqrt{y}} \left[ f_X(\sqrt{y}) + f_X(-\sqrt{y}) \right]
+\end{aligned}
+$$
+
+
+\vspace{1em}
+\subsubsection*{2. 二维随机变量}
+
+\begin{新引理}[分布函数与概率密度的微积分关系]
+    对于二维连续型随机变量 $(X, Y)$，其联合分布函数 $F(x,y)$ 与联合概率密度 $f(x,y)$ 满足：
+    $$ F(x, y) = \int_{-\infty}^{x} \int_{-\infty}^{y} f(u, v) dv du \quad \text{且} \quad \frac{\partial^2 F(x,y)}{\partial x \partial y} = f(x,y) $$
+\end{新引理}
+
+\textbf{边缘分布 (Marginal Distribution)}
+将联合分布中的另一个变量“积分掉”，即可得到边缘分布。
+\begin{itemize}
+    \item \textbf{分布函数：} 
+    $$ F_X(x) = \lim_{y \to +\infty} F(x, y) = \int_{-\infty}^{x} \left[ \int_{-\infty}^{+\infty} f(t, y) dy \right] dt $$
+    \item \textbf{概率密度函数及其推导：} 对 $F_X(x)$ 两边关于 $x$ 求导，由微积分基本定理可得：
+    $$ f_X(x) = \frac{d}{dx} \int_{-\infty}^{x} \left( \int_{-\infty}^{+\infty} f(t, y) dy \right) dt = \int_{-\infty}^{+\infty} f(x, y) dy $$
+    同理可证 $f_Y(y) = \int_{-\infty}^{+\infty} f(x, y) dx$。
+\end{itemize}
+
+\textbf{条件分布 (Conditional Distribution)}
+\begin{itemize}
+    \item \textbf{离散型：} $P\{X=x_i \mid Y=y_j\} = \frac{P\{X=x_i, Y=y_j\}}{P\{Y=y_j\}}$
+    \item \textbf{连续型概率密度及其推导：} 考虑在 $y < Y \le y + \Delta y$ 的条件下，$X \le x$ 的概率。当 $\Delta y \to 0$ 时，利用极限和积分中值定理：
+    $$ 
+    \begin{aligned}
+    F_{X|Y}(x|y) &= \lim_{\Delta y \to 0} P\{X \le x \mid y < Y \le y + \Delta y\} \\
+    &= \lim_{\Delta y \to 0} \frac{P\{X \le x, y < Y \le y + \Delta y\}}{P\{y < Y \le y + \Delta y\}} \\
+    &= \lim_{\Delta y \to 0} \frac{\int_{-\infty}^{x} \int_{y}^{y+\Delta y} f(u, v) dv du}{\int_{y}^{y+\Delta y} f_Y(v) dv} \approx \frac{\int_{-\infty}^{x} f(u, y) \Delta y du}{f_Y(y) \Delta y} = \int_{-\infty}^{x} \frac{f(u, y)}{f_Y(y)} du
+    \end{aligned}
+    $$
+    两边对 $x$ 求导，即得条件概率密度：
+    $$ f_{X|Y}(x|y) = \frac{f(x, y)}{f_Y(y)} \quad (f_Y(y) > 0) $$
+\end{itemize}
+
+\textbf{独立性 (Independence)}
+若 $X$ 和 $Y$ 相互独立，则联合分布等于边缘分布的乘积：
+\begin{itemize}
+    \item 离散型：$\forall x, y, \quad P\{X=x_i, Y=y_j\} = P\{X=x_i\} \cdot P\{Y=y_j\}$
+    \item 任意型（分布函数）：$F(x, y) = F_X(x) \cdot F_Y(y)$
+    \item 连续型（概率密度）：$f(x, y) = f_X(x) \cdot f_Y(y)$
+\end{itemize}
+
+
+\vspace{1em}
+\subsubsection*{3. 两个随机变量的函数的分布}
+
+\begin{新引理}[二维随机变量变换的雅可比行列式法]
+	设 $(X, Y)$ 的联合概率密度为 $f(x, y)$。作变换 $U = X, Z = g(X, Y)$，若其存在唯一反函数 $x = u, y = h(u, z)$，且偏导数连续，则雅可比行列式（Jacobian）为：
+	$$ J = \frac{\partial(x, y)}{\partial(u, z)} = \begin{vmatrix} \frac{\partial x}{\partial u} & \frac{\partial x}{\partial z} \\ \frac{\partial y}{\partial u} & \frac{\partial y}{\partial z} \end{vmatrix} = \begin{vmatrix} 1 & 0 \\ \frac{\partial y}{\partial u} & \frac{\partial y}{\partial z} \end{vmatrix} = \frac{\partial y}{\partial z} $$
+	变换后的联合概率密度为 $f_{U,Z}(u, z) = f(u, h(u, z)) \cdot |J|$。求 $Z$ 的边缘密度只需对 $u$（即 $x$）积分：
+	$$ f_Z(z) = \int_{-\infty}^{+\infty} f(x, h(x, z)) \left| \frac{\partial y}{\partial z} \right| dx $$
+\end{新引理}
+
+\textbf{(1) 和的分布 \quad $Z = X + Y$}
+\begin{itemize}
+    \item \textbf{一般情况与证明：} 由 $z = x + y$ 可得反函数 $y = z - x$。此时雅可比行列式 $J = \frac{\partial y}{\partial z} = 1$。代入引理公式直接得到：
+    $$ f_Z(z) = \int_{-\infty}^{+\infty} f(x, z-x) \cdot |1| dx = \int_{-\infty}^{+\infty} f(x, z-x) dx $$
+    若 $X, Y$ 相互独立，则 $f(x,y) = f_X(x)f_Y(y)$，可得\textbf{卷积公式}：
+    $$ f_Z(z) = \int_{-\infty}^{+\infty} f_X(x) \cdot f_Y(z-x) dx = \int_{-\infty}^{+\infty} f_X(z-y) \cdot f_Y(y) dy $$
+    \item \textbf{正态分布的可加性：} 若 $X \sim N(\mu_1, \sigma_1^2)$，$Y \sim N(\mu_2, \sigma_2^2)$ 且相互独立，代入卷积公式并通过配方化简，可证：
+    $$ Z = X + Y \sim N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2) $$
+\end{itemize}
+
+\textbf{(2) 商与积的分布} 
+\begin{itemize}
+    \item \textbf{商 $Z = \frac{Y}{X}$：} 反函数为 $y = xz$。雅可比行列式 $J = \frac{\partial y}{\partial z} = x$。代入引理公式可证：
+    $$ f_{Y/X}(z) = \int_{-\infty}^{+\infty} f(x, xz) \cdot |x| dx $$
+    \item \textbf{积 $Z = XY$：} 反函数为 $y = \frac{z}{x}$。雅可比行列式 $J = \frac{\partial y}{\partial z} = \frac{1}{x}$。代入引理公式可证：
+    $$ f_{XY}(z) = \int_{-\infty}^{+\infty} f\left(x, \frac{z}{x}\right) \cdot \left| \frac{1}{x} \right| dx $$
+\end{itemize}
+
+\vspace{1em}
+\textbf{(3) 最大值与最小值的分布} (重难点)
+
+假设 $X$ 和 $Y$ 相互独立，其分布函数分别为 $F_X(x)$ 和 $F_Y(y)$。
+\begin{itemize}
+    \item \textbf{最大值分布 \quad $M = \max\{X, Y\}$} \\
+    推导：$M \le z$ 意味着 $X$ 和 $Y$ \textbf{同时}必须小于等于 $z$。由独立性可得：
+    $$ 
+    \begin{aligned}
+    F_{\max}(z) &= P\{M \le z\} = P\{\max\{X, Y\} \le z\} \\
+    &= P\{X \le z \text{ 且 } Y \le z\} \\
+    &= P\{X \le z\} \cdot P\{Y \le z\} = F_X(z) \cdot F_Y(z)
+    \end{aligned}
+    $$
+    
+    \item \textbf{最小值分布 \quad $N = \min\{X, Y\}$} \\
+    推导：直接求 $\min \le z$ 比较困难，我们转化为对立事件，即 $\min > z$ 意味着 $X$ 和 $Y$ \textbf{同时}必须大于 $z$。
+    $$ 
+    \begin{aligned}
+    F_{\min}(z) &= P\{N \le z\} = 1 - P\{N > z\} \\
+    &= 1 - P\{\min\{X, Y\} > z\} \\
+    &= 1 - P\{X > z \text{ 且 } Y > z\} \\
+    &= 1 - [P\{X > z\} \cdot P\{Y > z\}] \\
+    &= 1 - [ (1 - F_X(z)) \cdot (1 - F_Y(z)) ]
+    \end{aligned}
+    $$
+\end{itemize}

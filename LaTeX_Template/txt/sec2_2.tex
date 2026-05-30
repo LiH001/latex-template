@@ -1,0 +1,145 @@
+% ==========================================
+% 一维与二维随机变量函数的分布实战
+% ==========================================
+
+\vspace{1.5em}
+\subsubsection*{1. 一维随机变量的函数的分布}
+
+\begin{例题}[求 $Y=e^{-X}$ 的密度函数]
+	已知连续型随机变量 $X$ 具有密度函数：
+	$$ f(x) = \begin{cases} 0.5e^{-x} + e^{-2x}, & x > 0 \\ 0, & x \le 0 \end{cases} $$
+	求随机变量 $Y = e^{-X}$ 的密度函数 $f_Y(y)$。
+\end{例题}
+
+\textbf{解答}\quad
+这里我们使用\textbf{分布函数求导法}。这种方法思路最清晰，且利用复合函数求导可以免去求积分的麻烦。
+
+\textbf{第一步：确定 $Y$ 的取值范围}\\
+因为 $x > 0$，且 $Y = e^{-X}$ 单调递减，所以 $Y$ 的取值范围是 $e^{-\infty} < Y < e^0$，即 $0 < y < 1$。
+
+\textbf{第二步：利用分布函数转化并直接求导}\\
+当 $0 < y < 1$ 时，写出 $Y$ 的分布函数 $F_Y(y)$：
+$$ 
+\begin{aligned}
+F_Y(y) &= P\{Y \le y\} = P\{e^{-X} \le y\} \\
+&= P\{-X \le \ln y\} = P\{X \ge -\ln y\} \\
+&= 1 - P\{X < -\ln y\} = 1 - F_X(-\ln y)
+\end{aligned}
+$$
+对两边关于 $y$ 直接求导，利用复合函数求导法则，即可直接得到密度函数 $f_Y(y)$：
+$$ 
+\begin{aligned}
+f_Y(y) &= F_Y'(y) = \frac{d}{dy}[1 - F_X(-\ln y)] \\
+&= -f_X(-\ln y) \cdot \frac{d}{dy}(-\ln y) \\
+&= -f_X(-\ln y) \cdot \left( -\frac{1}{y} \right) \\
+&= f_X(-\ln y) \cdot \frac{1}{y}
+\end{aligned}
+$$
+
+\textbf{第三步：代入原密度函数计算}\\
+将 $x = -\ln y$ 代入原分布的密度函数 $f(x) = 0.5e^{-x} + e^{-2x}$ 中：
+$$ 
+\begin{aligned}
+f_Y(y) &= \left( 0.5e^{-(-\ln y)} + e^{-2(-\ln y)} \right) \cdot \frac{1}{y}
+\end{aligned}
+$$
+利用对数恒等式 $e^{\ln y} = y$ 以及 $e^{2\ln y} = y^2$，上式可进一步化简：
+$$ 
+\begin{aligned}
+f_Y(y) &= (0.5y + y^2) \cdot \frac{1}{y} \\
+&= 0.5 + y
+\end{aligned}
+$$
+
+\textbf{结论：}\\
+当 $y \notin (0, 1)$ 时，$f_Y(y) = 0$。因此，$Y$ 的密度函数为：
+$$ f_Y(y) = \begin{cases} y + 0.5, & 0 < y < 1 \\ 0, & \text{其他} \end{cases} $$
+
+
+\vspace{1.5em}
+\subsubsection*{2. 两个随机变量的函数的分布}
+
+\begin{例题}[求 $Z=XY$ 的密度函数]
+	已知二维连续型随机变量 $(X,Y)$ 的密度函数如下：
+	$$ f(x,y) = \begin{cases} x, & 1 \le x \le 2, \frac{1}{x} \le y \le \frac{2}{x} \\ 0, & \text{其他} \end{cases} $$
+	求 $Z=XY$ 的密度函数 $f_Z(z)$。
+\end{例题}
+
+\textbf{解答}\quad
+根据两个随机变量的函数的分布定理，设 $Z = g(X,Y) = XY$。\\
+由题意知，在 $f(x,y) \neq 0$ 的区域内 $1 \le x \le 2$，所以 $x \neq 0$。\\
+解出反函数 $y = h(x,z) = \frac{z}{x}$，求偏导得到 $\frac{\partial h}{\partial z} = \frac{1}{x}$。\\
+由于 $x > 0$，所以雅可比因子的绝对值为：
+$$ \left| \frac{\partial h}{\partial z} \right| = \frac{1}{x} $$
+
+代入定理公式：
+$$ f_Z(z) = \int_{-\infty}^{+\infty} f(x, h(x,z)) \left| \frac{\partial h}{\partial z} \right| dx = \int_{-\infty}^{+\infty} f\left(x, \frac{z}{x}\right) \frac{1}{x} dx $$
+
+\textbf{确定非零区间的积分上下限（核心步骤）：}\\
+被积函数 $f\left(x, \frac{z}{x}\right)$ 不为零的条件是点 $\left(x, \frac{z}{x}\right)$ 必须落在原密度函数的非零区域内。代入原条件得：
+$$ \begin{cases} 1 \le x \le 2 \\ \frac{1}{x} \le \frac{z}{x} \le \frac{2}{x} \end{cases} $$
+因为 $x > 0$，我们将第二个不等式同时乘以 $x$，得到关于 $z$ 的范围：
+$$ 1 \le z \le 2 $$
+此时，这组条件变为：$1 \le z \le 2$ 且 $1 \le x \le 2$。\\
+这说明，当 $z$ 取 $[1, 2]$ 中的任意值时，$x$ 的积分区间始终是整个 $[1, 2]$，并不受到 $z$ 的耦合限制。
+
+\textbf{计算积分：}\\
+当 $1 \le z \le 2$ 时，代入原密度函数 $f(x,y) = x$（此时 $y$ 的位置被 $\frac{z}{x}$ 替代，但原函数表达式中并没有 $y$，所以直接就是 $x$）：
+$$ 
+\begin{aligned}
+f_Z(z) &= \int_{1}^{2} x \cdot \frac{1}{x} dx \\
+&= \int_{1}^{2} 1 dx \\
+&= [x]_1^2 = 2 - 1 = 1
+\end{aligned}
+$$
+
+当 $z$ 不在 $[1, 2]$ 范围内时，$f_Z(z) = 0$。
+
+\textbf{结论：}\\
+$Z = XY$ 的密度函数为：
+$$ f_Z(z) = \begin{cases} 1, & 1 \le z \le 2 \\ 0, & \text{其他} \end{cases} $$
+
+\vspace{1.5em}
+\subsubsection*{3. 二维分布函数与区域概率的直接积分}
+
+\begin{例题}[求分布函数与区域概率]
+	设二维随机变量 $(X,Y)$ 具有概率密度
+	$$ f(x,y) = \begin{cases} 2e^{-(2x+y)}, & x>0, y>0, \\ 0, & \text{其他.} \end{cases} $$
+	(1) 求分布函数 $F(x,y)$；\\
+	(2) 求概率 $P\{Y \le X\}$。
+\end{例题}
+
+\textbf{解答}\quad
+
+\textbf{(1) 求分布函数 $F(x,y)$}\\
+根据二维分布函数的定义 $F(x,y) = \int_{-\infty}^{x} \int_{-\infty}^{y} f(u,v) dv du$。\\
+当 $x \le 0$ 或 $y \le 0$ 时，显然有 $F(x,y) = 0$。\\
+当 $x > 0$ 且 $y > 0$ 时，被积函数为 $f(u,v) = 2e^{-(2u+v)}$：
+$$ 
+\begin{aligned}
+F(x,y) &= \int_{0}^{x} \int_{0}^{y} 2e^{-(2u+v)} dv du \\
+&= \left( \int_{0}^{x} 2e^{-2u} du \right) \cdot \left( \int_{0}^{y} e^{-v} dv \right) \\
+&= \left[ -e^{-2u} \right]_{0}^{x} \cdot \left[ -e^{-v} \right]_{0}^{y} \\
+&= (1 - e^{-2x})(1 - e^{-y})
+\end{aligned}
+$$
+因此，联合分布函数为：
+$$ F(x,y) = \begin{cases} (1 - e^{-2x})(1 - e^{-y}), & x>0, y>0 \\ 0, & \text{其他} \end{cases} $$
+
+\textbf{(2) 求概率 $P\{Y \le X\}$ （利用二重积分直接求解）}\\
+要求 $P\{Y \le X\}$，我们不需要求出 $Z=Y-X$ 的分布，而是直接将条件 $Y \le X$ 作为二重积分的积分区域 $D$。\\
+由题意，联合密度非零的区域是第一象限 $(x>0, y>0)$，再结合条件 $y \le x$，积分区域 $D$ 可以表示为：$0 < x < +\infty$ 且 $0 < y < x$。
+$$ 
+\begin{aligned}
+P\{Y \le X\} &= \iint_{y \le x} f(x,y) dx dy \\
+&= \int_{0}^{+\infty} \left( \int_{0}^{x} 2e^{-(2x+y)} dy \right) dx \\
+&= \int_{0}^{+\infty} 2e^{-2x} \left[ -e^{-y} \right]_{0}^{x} dx \\
+&= \int_{0}^{+\infty} 2e^{-2x} (1 - e^{-x}) dx \\
+&= \int_{0}^{+\infty} (2e^{-2x} - 2e^{-3x}) dx \\
+&= \left[ -e^{-2x} + \frac{2}{3}e^{-3x} \right]_{0}^{+\infty} \\
+&= \lim_{x \to +\infty} \left( -e^{-2x} + \frac{2}{3}e^{-3x} \right) - \left( -e^{0} + \frac{2}{3}e^{0} \right) \\
+&= 0 - \left( -1 + \frac{2}{3} \right) \\
+&= \frac{1}{3}
+\end{aligned}
+$$
+故 $P\{Y \le X\} = \frac{1}{3}$。

@@ -1,0 +1,113 @@
+% ==========================================
+% 分布的可加性探讨与证明
+% ==========================================
+
+\vspace{1.5em}
+\subsubsection*{1. 常见分布的可加性总结}
+
+\textbf{可加性（再生性）定义}：若随机变量 $X$ 和 $Y$ 相互独立，且服从同一类型的分布（参数可以不同），如果它们的和 $Z = X + Y$ 仍然服从该类型的分布，则称该分布具有可加性。
+
+\begin{center}
+    \renewcommand{\arraystretch}{1.5} % 调整表格行高
+    \begin{tabular}{|c|c|l|l|}
+        \hline
+        \textbf{分布类型} & \textbf{是否可加} & \textbf{前提条件 (相互独立)} & \textbf{结论} \\
+        \hline
+        \textbf{二项分布} & \textbf{是} & 成功率 $p$ \textbf{必须相同} & $B(n_1, p) + B(n_2, p) = B(n_1+n_2, p)$ \\
+        \hline
+        \textbf{泊松分布} & \textbf{是} & 无特殊限制 & $P(\lambda_1) + P(\lambda_2) = P(\lambda_1 + \lambda_2)$ \\
+        \hline
+        \textbf{正态分布} & \textbf{是} & 无特殊限制 & $N(\mu_1, \sigma_1^2) + N(\mu_2, \sigma_2^2) = N(\mu_1+\mu_2, \sigma_1^2+\sigma_2^2)$ \\
+        \hline
+        \textbf{几何分布} & 否 & 即使 $p$ 相同也不可加 & 和服从\textbf{负二项分布} (巴斯卡分布) \\
+        \hline
+        \textbf{指数分布} & 否 & 即使 $\lambda$ 相同也不可加 & 和服从 \textbf{Erlang 分布} (伽马分布特例) \\
+        \hline
+        \textbf{均匀分布} & 否 & 即使区间相同也不可加 & 和服从分段函数 (如辛钦分布) \\
+        \hline
+    \end{tabular}
+\end{center}
+
+
+\vspace{1.5em}
+\subsubsection*{2. 经典例题与证明}
+
+\begin{例题}[泊松分布的可加性证明]
+	已知 $X \sim P(\lambda_1)$， $Y \sim P(\lambda_2)$，且 $X$ 与 $Y$ 相互独立。证明 $Z = X + Y \sim P(\lambda_1 + \lambda_2)$。
+\end{例题}
+\textbf{解答}\quad
+利用离散型随机变量和的分布公式（离散卷积）：
+$$ P(Z=n) = P(X+Y=n) = \sum_{k=0}^{n} P(X=k)P(Y=n-k) $$
+代入泊松分布的概率质量函数：
+$$ 
+\begin{aligned}
+P(Z=n) &= \sum_{k=0}^{n} \frac{\lambda_1^k}{k!}e^{-\lambda_1} \cdot \frac{\lambda_2^{n-k}}{(n-k)!}e^{-\lambda_2} \\
+&= e^{-(\lambda_1+\lambda_2)} \sum_{k=0}^{n} \frac{1}{k!(n-k)!} \lambda_1^k \lambda_2^{n-k}
+\end{aligned}
+$$
+为了凑出二项式展开，我们在求和号内外同乘除 $n!$：
+$$ 
+\begin{aligned}
+P(Z=n) &= e^{-(\lambda_1+\lambda_2)} \frac{1}{n!} \sum_{k=0}^{n} \frac{n!}{k!(n-k)!} \lambda_1^k \lambda_2^{n-k} \\
+&= e^{-(\lambda_1+\lambda_2)} \frac{1}{n!} \sum_{k=0}^{n} C_n^k \lambda_1^k \lambda_2^{n-k}
+\end{aligned}
+$$
+利用二项式定理 $(a+b)^n = \sum_{k=0}^{n} C_n^k a^k b^{n-k}$，上式可化简为：
+$$ P(Z=n) = \frac{(\lambda_1+\lambda_2)^n}{n!} e^{-(\lambda_1+\lambda_2)} $$
+这正是参数为 $\lambda_1 + \lambda_2$ 的泊松分布的分布律，得证。
+
+
+\vspace{1em}
+\begin{例题}[二项分布可加性的条件探究]
+	已知 $X \sim B(n_1, p)$， $Y \sim B(n_2, p)$，且 $X, Y$ 相互独立。证明 $Z = X + Y \sim B(n_1+n_2, p)$。如果两者的 $p$ 不同，还具有可加性吗？
+\end{例题}
+\textbf{解答}\quad
+\textbf{第一部分：证明可加性 ($p$ 相同)} \\
+\textbf{物理意义法（推荐）}：$X$ 表示在 $n_1$ 次独立重复试验中成功的次数，$Y$ 表示在额外的 $n_2$ 次独立重复试验中成功的次数，每次成功率均为 $p$。那么 $X+Y$ 显然表示在总共 $n_1+n_2$ 次独立重复试验中成功的总次数，这严格符合二项分布的定义，即 $Z \sim B(n_1+n_2, p)$。\\
+\textbf{代数法（离散卷积）}：
+$$ 
+\begin{aligned}
+P(Z=k) &= \sum_{i=0}^{k} P(X=i)P(Y=k-i) \\
+&= \sum_{i=0}^{k} [C_{n_1}^i p^i (1-p)^{n_1-i}] \cdot [C_{n_2}^{k-i} p^{k-i} (1-p)^{n_2-(k-i)}] \\
+&= p^k (1-p)^{n_1+n_2-k} \sum_{i=0}^{k} C_{n_1}^i C_{n_2}^{k-i}
+\end{aligned}
+$$
+根据范德蒙德卷积公式 $\sum_{i=0}^{k} C_{n_1}^i C_{n_2}^{k-i} = C_{n_1+n_2}^k$，代入即得 $B(n_1+n_2, p)$ 的分布律。
+
+\textbf{第二部分：$p$ 不同时不可加的反例} \\
+若 $X \sim B(1, p_1)$，$Y \sim B(1, p_2)$，$p_1 \neq p_2$。$Z = X+Y$ 可能取值为 $0, 1, 2$。
+$$ P(Z=2) = P(X=1)P(Y=1) = p_1 p_2 $$
+如果 $Z$ 仍然服从二项分布，设为 $B(2, p_3)$，则必有 $P(Z=2) = p_3^2$。这意味着 $p_3 = \sqrt{p_1 p_2}$。
+但同时 $E(Z) = E(X)+E(Y) = p_1+p_2$。如果 $Z \sim B(2, p_3)$，其期望应为 $2p_3 = 2\sqrt{p_1 p_2}$。
+显然 $p_1+p_2 \neq 2\sqrt{p_1 p_2}$（除非 $p_1=p_2$），产生矛盾。故 $p$ 不同时不可加。
+
+
+\vspace{1em}
+\begin{例题}[几何分布与指数分布不可加的反例]
+	分别计算两个独立同分布的几何分布之和、以及两个独立同分布的指数分布之和，说明它们为何不具有可加性。
+\end{例题}
+\textbf{解答}\quad
+\textbf{(1) 几何分布的反例：} \\
+设 $X, Y \sim Ge(p)$ 独立，其分布律为 $P(X=k) = (1-p)^{k-1}p \quad (k \ge 1)$。
+考察 $Z = X + Y$，显然 $Z \ge 2$。计算 $P(Z=k)$：
+$$ 
+\begin{aligned}
+P(Z=k) &= \sum_{i=1}^{k-1} P(X=i)P(Y=k-i) \\
+&= \sum_{i=1}^{k-1} [(1-p)^{i-1}p] \cdot [(1-p)^{k-i-1}p] \\
+&= \sum_{i=1}^{k-1} p^2 (1-p)^{k-2} = (k-1)p^2(1-p)^{k-2}
+\end{aligned}
+$$
+由于 $P(Z=k)$ 的表达式中出现了系数 $(k-1)$，这与几何分布的标准形式 $(1-p)^{k-1}p$ 完全不同（实际上它是负二项分布）。因此几何分布不具有可加性。
+
+\textbf{(2) 指数分布的反例（利用卷积公式）：} \\
+设 $X, Y \sim E(\lambda)$ 独立，概率密度为 $f(x) = \lambda e^{-\lambda x} (x>0)$。求 $Z=X+Y$ 的概率密度 $f_Z(z)$。
+当 $z > 0$ 时，利用卷积公式：
+$$ 
+\begin{aligned}
+f_Z(z) &= \int_{0}^{z} f_X(x) f_Y(z-x) dx \\
+&= \int_{0}^{z} (\lambda e^{-\lambda x}) \cdot (\lambda e^{-\lambda (z-x)}) dx \\
+&= \int_{0}^{z} \lambda^2 e^{-\lambda z} dx \\
+&= \lambda^2 e^{-\lambda z} \int_{0}^{z} 1 dx = \lambda^2 z e^{-\lambda z}
+\end{aligned}
+$$
+所得密度函数 $f_Z(z) = \lambda^2 z e^{-\lambda z}$ （此为伽马分布），其中多出了变量 $z$ 作为乘子，显然不再是指数分布的形式。因此指数分布不具有可加性。
